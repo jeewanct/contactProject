@@ -55,7 +55,7 @@ public class TableDataSource: NSObject, UITableViewDataSource, UITableViewDelega
     var startScrollinWithTopView: StartScrollingWithTopView?
     var lastContentOffset: CGFloat = 0
     weak var tableView: UITableView?
-    
+    var isSectionIndexTitleAvail: Bool?
     var topViewHeight: CGFloat = 0{
         didSet{
             currentHeight = topViewHeight
@@ -63,7 +63,7 @@ public class TableDataSource: NSObject, UITableViewDataSource, UITableViewDelega
     }
     var currentHeight: CGFloat = 0
     
-    init(controller: UIViewController? = nil,withData: [GenericTableSection]? = nil, tableView: UITableView,registerCells: UITableViewCell.Type..., selection: CollectionTableSelection? = nil, startScrolling: StartScrolling? = nil, endScrolling: EndScrolling? = nil){
+    init(controller: UIViewController? = nil,withData: [GenericTableSection]? = nil, tableView: UITableView,registerCells: UITableViewCell.Type...,isSectionIndexTitleAvail: Bool = false ,selection: CollectionTableSelection? = nil, startScrolling: StartScrolling? = nil, endScrolling: EndScrolling? = nil){
         
         super.init()
         self.controller = controller
@@ -75,6 +75,7 @@ public class TableDataSource: NSObject, UITableViewDataSource, UITableViewDelega
         self.startScrolling = startScrolling
         self.endScrolling = endScrolling
         self.tableView = tableView
+        self.isSectionIndexTitleAvail = isSectionIndexTitleAvail
     }
     
     public func reloadData(_ genericSection: [GenericTableSection]){
@@ -107,10 +108,7 @@ extension TableDataSource{
     }
     
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if data?[section].tableSectionCell != nil{
-            return UITableView.automaticDimension
-        }
-        return 0.001
+        return UITableView.automaticDimension
     }
     
     
@@ -128,7 +126,20 @@ extension TableDataSource{
         return 0.001
     }
     
+    public func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        if isSectionIndexTitleAvail == true{
+            let alphabets = Constants.alphabets.split(separator: ",")
+            return alphabets.map({String($0)})
+        }
+        return nil
+    }
     
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if isSectionIndexTitleAvail == true{
+            return data?[section].sectionData as? String
+        }
+        return nil
+    }
     
 }
 
@@ -144,7 +155,7 @@ extension TableDataSource{
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
+        startScrolling?(scrollView)
         var value: CGFloat = 0
         if (self.lastContentOffset < scrollView.contentOffset.y) {
             if currentHeight == 0 { return }
@@ -163,7 +174,7 @@ extension TableDataSource{
         }
         
         lastContentOffset = scrollView.contentOffset.y
-        startScrolling?(scrollView)
+        
         startScrollinWithTopView?(scrollView, currentHeight)
     }
 }

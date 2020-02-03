@@ -8,9 +8,6 @@
 
 import UIKit
 
-
-
-
 extension UITableView{
     func cell<T: UITableViewCell>(tableViewCell: T.Type, withCellDetails data: Any? = nil, controller: UIViewController? = nil) -> T{
         let genericCell = self.dequeueReusableCell(withIdentifier: String(describing: tableViewCell.self)) as! T
@@ -70,17 +67,6 @@ extension UIImageView {
         let templateImage = self.image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         self.image = templateImage
         self.tintColor = color
-    }
-    
-    //Set image
-    func addImage(with imgURL: String?, placeHolderImage: UIImage){
-        let imgURL = imgURL?.getValidURLfromString()
-        
-        if imgURL?.isValidURL == true{
-            self.sd_setImage(with: (imgURL?.url)!, placeholderImage: placeHolderImage, options: .continueInBackground, context: nil)
-        }else{
-            self.image = placeHolderImage
-        }
     }
 }
 

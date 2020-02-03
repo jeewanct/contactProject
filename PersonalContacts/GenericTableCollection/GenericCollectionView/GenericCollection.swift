@@ -64,20 +64,24 @@ public class DataSourceCollection: NSObject, UICollectionViewDelegate, UICollect
         }
     }
     var currentHeight: CGFloat = 0
-    
+    weak var collectionView: UICollectionView?
     
     init(controller: UIViewController? = nil,withData: [GenericCollectionSection]? = nil, collectionView: UICollectionView, selection: CollectionTableSelection? = nil, startScrolling: StartScrolling? = nil, endScrolling: EndScrolling? = nil){
         super.init()
+        self.collectionView = collectionView
         self.controller = controller
         self.data = withData
+        collectionView.delegate =  self
         collectionView.dataSource = self
-        collectionView.delegate =   self
         self.selection = selection
         self.startScrolling = startScrolling
         self.endScrolling = endScrolling
-        
     }
     
+    public func reloadData(_ genericSection: [GenericCollectionSection]){
+        data = genericSection
+        collectionView?.reloadData()
+    }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return

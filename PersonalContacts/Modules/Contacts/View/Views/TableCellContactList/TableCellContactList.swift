@@ -8,17 +8,26 @@
 
 import UIKit
 
-class TableCellContactList: UITableViewCell {
+class TableCellContactList: BaseTableCell {
 
+    @IBOutlet weak var imageContact: UIImageView!
+    @IBOutlet weak var lblContactName: UILabel!
+    
+    @IBOutlet weak var imageFavorite: UIImageView!
+    override var data: Any?{
+        didSet{
+            setup()
+        }
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
+    func setup(){
+        guard let contactDetails = data as? Contact else { return }
+        lblContactName.text = (contactDetails.firstName ?? "") + " " + (contactDetails.lastName ?? "")
+        imageContact.addImage(url: URL(string: Constants.Service.baseURL + (contactDetails.profilePic ?? "")),placeholderImage: #imageLiteral(resourceName: "placeholder_photo.png"))
+        imageFavorite.isHidden = contactDetails.favorite ?? true
+    }
 }

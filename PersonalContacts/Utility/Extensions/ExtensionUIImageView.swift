@@ -6,4 +6,11 @@
 //  Copyright © 2020 jeevan tiwari. All rights reserved.
 //
 
-import Foundation
+import UIKit
+import SDWebImage
+
+extension UIImageView{
+    func addImage(url: URL?, placeholderImage: UIImage = #imageLiteral(resourceName: "ImageAdd")){
+        self.sd_setImage(with: url, placeholderImage: placeholderImage)
+    }
+}
